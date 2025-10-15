@@ -5,7 +5,7 @@ import java.util.List;
 
 public class PeliculaTableModel extends AbstractTableModel {
     private final List<Pelicula> data;
-    private final String[] cols = {"Título","Año","Director"};
+    private final String[] cols = {"Título","Año","Director", "Genero"};
 
     public PeliculaTableModel(List<Pelicula> data){ this.data = data; }
 
@@ -19,6 +19,7 @@ public class PeliculaTableModel extends AbstractTableModel {
             case 0 -> p.getTitle();
             case 1 -> p.getYear();
             case 2 -> p.getDirector();
+            case 3 -> p.getGenero();
             default -> "";
         };
     }

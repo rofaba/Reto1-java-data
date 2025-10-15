@@ -17,25 +17,47 @@ public class CsvPeliculaRepository implements PeliculaRepository {
         this.hasHeader = hasHeader;
     }
 
+    private static String[] splitFlexible(String line) {
+        String sep = (line.chars().filter(ch -> ch == ';').count()
+                >= line.chars().filter(ch -> ch == ',').count()) ? ";" : ",";
+        return line.split(java.util.regex.Pattern.quote(sep), 8); // ← hasta 8 campos
+    }
+
     @Override
     public List<Pelicula> findAllByUser(String userId) throws IOException {
         ensureFile();
+        List<Pelicula> out = new ArrayList<>();
         try (BufferedReader br = Files.newBufferedReader(file, StandardCharsets.UTF_8)) {
-            String line;
-            List<Pelicula> out = new ArrayList<>();
-            boolean skipHeader = hasHeader;
+            String line; boolean skip = hasHeader;
             while ((line = br.readLine()) != null) {
-                if (skipHeader) { skipHeader = false; continue; }
+                if (skip) { skip = false; continue; }
                 if (line.isBlank()) continue;
-                String[] p = line.split(",", 7);
-                if (p.length < 7) continue;
-                if (Objects.equals(p[6], userId)) {
-                    out.add(new Pelicula(p[0], p[1], safeInt(p[2]), p[3], p[4], p[5], p[6]));
+                if (line.charAt(0) == '\uFEFF') line = line.substring(1);
+
+                String[] p = splitFlexible(line);
+                if (p.length < 7) continue; // mínimo 7
+
+                // Mapeo: 7 campos (sin género) o 8 campos (con género)
+                String id       = p[0].trim();
+                String title    = p[1].trim();
+                String yearStr  = p[2].trim();
+                String director = p[3].trim();
+                String desc     = p[4].trim();
+                String genero    = (p.length == 8 ? p[5].trim() : "");
+                String imageUrl = (p.length == 8 ? p[6].trim() : p[5].trim());
+                String uid      = (p.length == 8 ? p[7].trim() : p[6].trim());
+
+                if (uid.equals(userId)) {
+                    int year = 0; try { year = Integer.parseInt(yearStr); } catch (Exception ignore) {}
+
+                    out.add(new Pelicula(id, title, year, director, desc, genero, imageUrl, uid));
                 }
             }
-            return out;
         }
+        return out;
     }
+
+
 
     @Override
     public Optional<Pelicula> findById(String id, String userId) throws IOException {
@@ -45,14 +67,15 @@ public class CsvPeliculaRepository implements PeliculaRepository {
     @Override
     public void add(Pelicula pelicula) throws IOException {
         ensureFile();
-        // Sanitiza descripción para no romper CSV si trae comas
         String safeDesc = pelicula.getDescription() == null ? "" : pelicula.getDescription().replace(",", " ");
+        String genre = pelicula.getGenero() == null ? "" : pelicula.getGenero().replace(",", " ");
         String line = String.join(",",
                 pelicula.getId(),
                 nullToEmpty(pelicula.getTitle()),
                 String.valueOf(pelicula.getYear()),
                 nullToEmpty(pelicula.getDirector()),
                 safeDesc,
+                genre, 
                 nullToEmpty(pelicula.getImageUrl()),
                 nullToEmpty(pelicula.getUserId())
         );
@@ -61,6 +84,7 @@ public class CsvPeliculaRepository implements PeliculaRepository {
             bw.write(line);
         }
     }
+
 
     @Override
     public boolean deleteById(String id, String userId) throws IOException {

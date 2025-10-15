@@ -5,9 +5,9 @@ import java.awt.*;
 
 public class NuevoPeliculaDialog extends JDialog {
 
-    public record FormData(String title, String year, String director, String description, String imageUrl) {}
+    public record FormData(String title, String year, String director, String description, String genre, String imageUrl) {}
 
-    private JTextField txtTitle, txtYear, txtDirector, txtImage;
+    private JTextField txtTitle, txtYear, txtDirector, txtImage, txtGenre;
     private JTextArea txtDesc;
     private FormData result;
 
@@ -24,14 +24,16 @@ public class NuevoPeliculaDialog extends JDialog {
         txtDirector = new JTextField(25);
         txtImage = new JTextField(25);
         txtDesc = new JTextArea(5, 25);
+        txtGenre = new JTextField(15);
 
         JPanel form = new JPanel(new GridLayout(0,1,6,6));
         form.add(new JLabel("Título")); form.add(txtTitle);
         form.add(new JLabel("Año")); form.add(txtYear);
         form.add(new JLabel("Director")); form.add(txtDirector);
         form.add(new JLabel("Imagen (URL)")); form.add(txtImage);
-        form.add(new JLabel("Descripción"));
-        form.add(new JScrollPane(txtDesc));
+        form.add(new JLabel("Descripción")); form.add(txtDesc);
+        form.add(new JLabel("Género")); form.add(txtGenre);
+
 
         JButton btnOk = new JButton("Guardar");
         JButton btnCancel = new JButton("Cancelar");
@@ -55,6 +57,7 @@ public class NuevoPeliculaDialog extends JDialog {
                     txtYear.getText().trim(),
                     txtDirector.getText().trim(),
                     txtDesc.getText(),
+                    txtGenre.getText(),
                     txtImage.getText().trim()
             );
             dispose();

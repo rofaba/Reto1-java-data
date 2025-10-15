@@ -34,7 +34,7 @@ public class MainFrame extends JFrame {
 
         btnAdd = new JButton("Añadir");
         btnDelete = new JButton("Eliminar");
-        btnDetail = new JButton("Detalle");
+        btnDetail = new JButton("Ver más");
         btnLogout = new JButton("Cerrar sesión");
 
         JPanel top = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -89,6 +89,7 @@ public class MainFrame extends JFrame {
                     Integer.parseInt(data.year()),
                     data.director(),
                     data.description(),
+                    data.genre(),
                     data.imageUrl(),
                     session.getCurrentUser().getId()
             );

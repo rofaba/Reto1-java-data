@@ -34,15 +34,33 @@ public class MainController {
     }
 
     private void showLogin() {
-        System.out.println("[CONTROLLER] creando LoginDialog");
         LoginDialog login = new LoginDialog(null);
         login.setAuth(auth);
+
         login.setOnLoginSuccess(u -> {
-            System.out.println("[CONTROLLER] login OK para: " + u.getEmail());
-            showMain();
+            // 1) Garantiza usuario en sesión (por si tu AuthProvider no lo setea)
+            if (!session.isLoggedIn()) {
+                session.setCurrentUser(u);
+            }
+
+            // 2) Asegura la ventana principal
+            if (mainFrame == null) {
+                mainFrame = new MainFrame(peliculaRepo, session);
+                // (opcional) al cerrar main volvemos al login
+                mainFrame.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override public void windowClosing(java.awt.event.WindowEvent e) { doLogout(); }
+                    @Override public void windowClosed (java.awt.event.WindowEvent e) { doLogout(); }
+                });
+            }
+
+            // 3) Carga el listado del usuario y muestra
+            SwingUtilities.invokeLater(() -> {
+                mainFrame.loadData();     // <-- lee CSV filtrado por session.getCurrentUser().getId()
+                mainFrame.setVisible(true);
+            });
         });
-        login.setVisible(true); // modal; bloquea hasta cerrar
-        System.out.println("[CONTROLLER] LoginDialog cerrado");
+
+        login.setVisible(true); // modal
     }
 
     private void showMain() {
@@ -67,8 +85,8 @@ public class MainController {
     private void doLogout() {
         try { auth.logout(); } catch (Exception ignored) {}
         if (mainFrame != null) mainFrame.setVisible(false);
-        System.out.println("[CONTROLLER] logout -> showLogin");
         SwingUtilities.invokeLater(this::showLogin);
     }
+
 }
 
