@@ -6,11 +6,13 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.util.*;
-import java.util.stream.Collectors;
+
+
+import static java.lang.String.valueOf;
 
 public class CsvPeliculaRepository implements PeliculaRepository {
-    private final Path file;          // p.ej.: Paths.get("src/main/resources/data/peliculas (1).csv")
-    private final boolean hasHeader;  // marca si tu CSV tiene cabecera
+    private final Path file;          // ruta al archivo CSV
+    private final boolean hasHeader;  // marca si csv tiene cabecera
 
     public CsvPeliculaRepository(Path file, boolean hasHeader) {
         this.file = file;
@@ -72,7 +74,7 @@ public class CsvPeliculaRepository implements PeliculaRepository {
         String line = String.join(",",
                 pelicula.getId(),
                 nullToEmpty(pelicula.getTitle()),
-                String.valueOf(pelicula.getYear()),
+                nullToEmpty(valueOf(pelicula.getYear())),
                 nullToEmpty(pelicula.getDirector()),
                 safeDesc,
                 genre,

@@ -85,7 +85,7 @@ public class NuevoPeliculaDialog extends JDialog {
         // Listeners
         btnOk.addActionListener(e -> {
             if (txtTitle.getText().isBlank() || txtDirector.getText().isBlank()) {
-                JOptionPane.showMessageDialog(this, "Título y Director son obligatorios");
+                JOptionPane.showMessageDialog(this, "Título, Director y Año son obligatorios");
                 return;
             }
             result = new FormData(

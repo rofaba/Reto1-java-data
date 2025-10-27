@@ -19,7 +19,7 @@ public class CsvUsuarioRepository implements UsuarioRepository {
     @Override
     public Optional<Usuario> findByEmail(String email) throws IOException {
         ensureFile();
-        String target = email.trim().toLowerCase(); // email case-insensitive
+        String target = email.trim().toLowerCase();
         try (var br = Files.newBufferedReader(file, StandardCharsets.UTF_8)) {
             String line;
             boolean skip = hasHeader;

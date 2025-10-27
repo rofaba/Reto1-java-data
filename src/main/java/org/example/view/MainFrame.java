@@ -40,11 +40,11 @@ public class MainFrame extends JFrame {
         btnDetail = new JButton("Detalles");
         btnLogout = new JButton("Cerrar sesión");
 
-        // Gaps más amplios
-        JPanel top = new JPanel(new FlowLayout(FlowLayout.LEFT, 12, 8));
+        // Gaps
+        JPanel top = new JPanel(new FlowLayout(FlowLayout.LEFT, 12, 10));
         top.add(btnAdd); top.add(btnDelete); top.add(btnDetail);
 
-        JPanel right = new JPanel(new FlowLayout(FlowLayout.RIGHT, 12, 8));
+        JPanel right = new JPanel(new FlowLayout(FlowLayout.RIGHT, 12, 10));
         lblUser = new JLabel();
         right.add(lblUser);
         right.add(btnLogout);
@@ -117,7 +117,7 @@ public class MainFrame extends JFrame {
             loadData();
             JOptionPane.showMessageDialog(this, "Película añadida.");
         } catch (NumberFormatException nfe) {
-            JOptionPane.showMessageDialog(this, "Año inválido.");
+            JOptionPane.showMessageDialog(this, "Año no válido.");
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(this, "Error al añadir:\n"+ex.getMessage());
         }
@@ -132,7 +132,7 @@ public class MainFrame extends JFrame {
         try {
             boolean removed = repo.deleteById(p.getId(), session.getCurrentUser().getId());
             if (removed) { loadData(); JOptionPane.showMessageDialog(this, "Eliminada."); }
-            else JOptionPane.showMessageDialog(this, "No se eliminó (¿no es tuya?).");
+            else JOptionPane.showMessageDialog(this, "La película no se pudo eliminar.");
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(this, "Error al eliminar:\n"+ex.getMessage());
         }
