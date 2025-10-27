@@ -1,6 +1,7 @@
 package org.example.view;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 public class NuevoPeliculaDialog extends JDialog {
@@ -16,37 +17,75 @@ public class NuevoPeliculaDialog extends JDialog {
         buildUI();
     }
 
-    public FormData getResult() { return result; } // null si canceló
+    public FormData getResult() { return result; }
 
     private void buildUI() {
-        txtTitle = new JTextField(25);
-        txtYear = new JTextField(8);
+        // --- Header
+        JLabel title = new JLabel("Nueva película");
+        title.setFont(title.getFont().deriveFont(Font.BOLD, 18f));
+
+        // --- Campos
+        txtTitle    = new JTextField(25);
+        txtYear     = new JTextField(8);
         txtDirector = new JTextField(25);
-        txtImage = new JTextField(25);
-        txtDesc = new JTextArea(5, 25);
-        txtGenre = new JTextField(15);
+        txtImage    = new JTextField(25);
+        txtGenre    = new JTextField(15);
 
-        JPanel form = new JPanel(new GridLayout(0,1,6,6));
-        form.add(new JLabel("Título")); form.add(txtTitle);
-        form.add(new JLabel("Año")); form.add(txtYear);
-        form.add(new JLabel("Director")); form.add(txtDirector);
-        form.add(new JLabel("Imagen (URL)")); form.add(txtImage);
-        form.add(new JLabel("Descripción")); form.add(txtDesc);
-        form.add(new JLabel("Género")); form.add(txtGenre);
+        txtDesc = new JTextArea(4, 25); // menos alto
+        txtDesc.setLineWrap(true);
+        txtDesc.setWrapStyleWord(true);
+        txtDesc.setMargin(new Insets(6,6,6,6));
+        JScrollPane descScroll = new JScrollPane(txtDesc);
+        descScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
+        // --- Form con GridBag (2 columnas)
+        JPanel form = new JPanel(new GridBagLayout());
+        form.setBorder(new EmptyBorder(8, 8, 8, 8));
+        GridBagConstraints g = new GridBagConstraints();
+        g.insets = new Insets(4, 4, 4, 4);
+        g.anchor = GridBagConstraints.WEST;
+        g.fill = GridBagConstraints.HORIZONTAL;
+        g.gridy = 0;
 
+        addRow(form, g, "Título",        txtTitle);
+        addRow(form, g, "Año",           txtYear);
+        addRow(form, g, "Director",      txtDirector);
+        addRow(form, g, "Género",        txtGenre);
+        addRow(form, g, "Imagen (URL)",  txtImage);
+
+        // Descripción ocupa toda la fila (label arriba)
+        JLabel lblDesc = new JLabel("Descripción");
+        GridBagConstraints l = (GridBagConstraints) g.clone();
+        l.gridx = 0; l.gridwidth = 2; l.weightx = 1; l.fill = GridBagConstraints.HORIZONTAL;
+        form.add(lblDesc, l);
+
+        GridBagConstraints d = (GridBagConstraints) g.clone();
+        d.gridy++; d.gridx = 0; d.gridwidth = 2; d.weightx = 1; d.fill = GridBagConstraints.BOTH;
+        d.ipady = 40; // un poco más alto sin exagerar
+        form.add(descScroll, d);
+
+        // --- Botonera
         JButton btnOk = new JButton("Guardar");
         JButton btnCancel = new JButton("Cancelar");
+        JPanel actions = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 8));
+        actions.add(btnCancel);
+        actions.add(btnOk);
 
-        JPanel actions = new JPanel();
-        actions.add(btnCancel); actions.add(btnOk);
+        // --- Root con padding y gaps
+        JPanel root = new JPanel(new BorderLayout(12, 12));
+        root.setBorder(new EmptyBorder(16, 16, 16, 16));
+        root.add(title, BorderLayout.NORTH);
+        root.add(form, BorderLayout.CENTER);
+        root.add(actions, BorderLayout.SOUTH);
+        setContentPane(root);
 
-        setLayout(new BorderLayout(8,8));
-        add(form, BorderLayout.CENTER);
-        add(actions, BorderLayout.SOUTH);
+        // --- Tamaño compacto y centrado
         pack();
+        setMinimumSize(new Dimension(540, 360));
+        setResizable(false);
         setLocationRelativeTo(getOwner());
 
+        // --- Listeners
         btnOk.addActionListener(e -> {
             if (txtTitle.getText().isBlank() || txtDirector.getText().isBlank()) {
                 JOptionPane.showMessageDialog(this, "Título y Director son obligatorios");
@@ -57,12 +96,24 @@ public class NuevoPeliculaDialog extends JDialog {
                     txtYear.getText().trim(),
                     txtDirector.getText().trim(),
                     txtDesc.getText(),
-                    txtGenre.getText(),
+                    txtGenre.getText().trim(),
                     txtImage.getText().trim()
             );
             dispose();
         });
         btnCancel.addActionListener(e -> { result = null; dispose(); });
         getRootPane().setDefaultButton(btnOk);
+    }
+
+    private static void addRow(JPanel form, GridBagConstraints g, String label, JComponent field) {
+        GridBagConstraints c1 = (GridBagConstraints) g.clone();
+        c1.gridx = 0; c1.weightx = 0; c1.gridwidth = 1; c1.fill = GridBagConstraints.NONE;
+        form.add(new JLabel(label), c1);
+
+        GridBagConstraints c2 = (GridBagConstraints) g.clone();
+        c2.gridx = 1; c2.weightx = 1; c2.gridwidth = 1; c2.fill = GridBagConstraints.HORIZONTAL;
+        form.add(field, c2);
+
+        g.gridy++;
     }
 }

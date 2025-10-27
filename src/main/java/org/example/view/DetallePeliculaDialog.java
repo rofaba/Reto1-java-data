@@ -2,97 +2,114 @@ package org.example.view;
 
 import org.example.model.Pelicula;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.net.URL;
 
-/** Diálogo de detalle con imagen en panel EAST de ancho fijo. */
+/** Diálogo de detalle con imagen en panel EAST de ancho fijo y layout armónico. */
 public class DetallePeliculaDialog extends JDialog {
 
     public DetallePeliculaDialog(Frame owner, Pelicula p) {
         super(owner, "Detalle", true);
 
-        // ----- Título y director
-        JLabel lblTitle = new JLabel(p.getTitle() + " (" + p.getYear() + ")");
+        // ----- Encabezado
+        JLabel lblTitle = new JLabel(p.getTitle() + " (" + p.getYear() + ")", SwingConstants.LEFT);
         lblTitle.setFont(lblTitle.getFont().deriveFont(Font.BOLD, 18f));
+
         JLabel lblDirector = new JLabel("Director: " + p.getDirector());
+        lblDirector.setFont(lblDirector.getFont().deriveFont(Font.PLAIN, 13f));
+
+        JPanel header = new JPanel(new BorderLayout(4, 4));
+        header.add(lblTitle, BorderLayout.CENTER);
+        header.add(lblDirector, BorderLayout.SOUTH);
+        header.setBorder(new EmptyBorder(0, 0, 4, 0));
 
         // ----- Descripción
         JTextArea txtDesc = new JTextArea(p.getDescription());
         txtDesc.setWrapStyleWord(true);
         txtDesc.setLineWrap(true);
         txtDesc.setEditable(false);
+        txtDesc.setFont(txtDesc.getFont().deriveFont(13f));
+        txtDesc.setMargin(new Insets(8, 8, 8, 8));
+
+        JScrollPane descScroll = new JScrollPane(txtDesc);
+        descScroll.setBorder(BorderFactory.createLineBorder(new Color(230,230,230)));
+        descScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
         // ----- Imagen (placeholder + carga asíncrona + escalado)
         JLabel lblImage = new JLabel("Cargando imagen…", SwingConstants.CENTER);
+        lblImage.setVerticalAlignment(SwingConstants.TOP);
+        JScrollPane imageScroll = new JScrollPane(lblImage);
+        imageScroll.setBorder(BorderFactory.createLineBorder(new Color(230,230,230)));
+        imageScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
         JPanel imagePane = new JPanel(new BorderLayout());
-        imagePane.setPreferredSize(new Dimension(260, 1));  // ancho fijo para EAST
-        imagePane.add(new JScrollPane(lblImage), BorderLayout.CENTER);
+        imagePane.setPreferredSize(new Dimension(260, 1)); // ancho fijo
+        imagePane.add(imageScroll, BorderLayout.CENTER);
+        imagePane.setBorder(new EmptyBorder(0, 0, 0, 0));
 
+        // Carga asíncrona segura
         if (p.getImageUrl() != null && !p.getImageUrl().isBlank()) {
             new SwingWorker<ImageIcon, Void>() {
                 @Override protected ImageIcon doInBackground() throws Exception {
-                    String urlStr = p.getImageUrl();
-                    if (urlStr == null || urlStr.isBlank()) return null;
-
-                    java.net.URL url = new java.net.URL(urlStr);
-                    java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
-                    conn.setInstanceFollowRedirects(true);
-                    conn.setConnectTimeout(4000);
-                    conn.setReadTimeout(4000);
-                    conn.setRequestProperty("User-Agent", "Mozilla/5.0");
-                    conn.setRequestProperty("Referer", "https://example.com/");
-                    int code = conn.getResponseCode();
-                    if (code >= 200 && code < 300) {
-                        try (var in = new java.io.BufferedInputStream(conn.getInputStream())) {
-                            var img = javax.imageio.ImageIO.read(in);
-                            if (img == null) return null;
-                            int w = 240, h = img.getHeight() * w / img.getWidth();
-                            var scaled = img.getScaledInstance(w, h, java.awt.Image.SCALE_SMOOTH);
-                            return new ImageIcon(scaled);
+                    try {
+                        var url = new java.net.URL(p.getImageUrl());
+                        var conn = (java.net.HttpURLConnection) url.openConnection();
+                        conn.setInstanceFollowRedirects(true);
+                        conn.setConnectTimeout(4000);
+                        conn.setReadTimeout(4000);
+                        conn.setRequestProperty("User-Agent", "Mozilla/5.0");
+                        int code = conn.getResponseCode();
+                        if (code >= 200 && code < 300) {
+                            try (var in = new java.io.BufferedInputStream(conn.getInputStream())) {
+                                var img = javax.imageio.ImageIO.read(in);
+                                if (img == null) return null;
+                                int w = 240, h = img.getHeight() * w / img.getWidth();
+                                var scaled = img.getScaledInstance(w, h, Image.SCALE_SMOOTH);
+                                return new ImageIcon(scaled);
+                            }
                         }
-                    } else {
-                        System.out.println("IMG HTTP " + code + " para " + urlStr);
-                        return null;
-                    }
+                    } catch (Exception ignored) { }
+                    return null;
                 }
                 @Override protected void done() {
                     try {
                         var icon = get();
                         lblImage.setIcon(icon);
                         lblImage.setText(icon == null ? "[No se pudo cargar imagen]" : "");
-                    } catch (Exception e) {
+                    } catch (Exception ex) {
                         lblImage.setText("[No se pudo cargar imagen]");
                     }
-                    lblImage.revalidate(); lblImage.repaint();
                 }
             }.execute();
         } else {
             lblImage.setText("[Sin imagen]");
         }
 
-        // ----- Layout principal
-        JPanel content = new JPanel(new BorderLayout(8, 8));
-        content.add(lblTitle, BorderLayout.NORTH);
+        // ----- Centro (solo texto)
+        JPanel center = new JPanel(new BorderLayout(8, 8));
+        center.add(descScroll, BorderLayout.CENTER);
 
-        JPanel center = new JPanel(new BorderLayout(6, 6));
-        center.add(lblDirector, BorderLayout.NORTH);
-        center.add(new JScrollPane(txtDesc), BorderLayout.CENTER);
-
-        content.add(center, BorderLayout.CENTER);
-        content.add(imagePane, BorderLayout.EAST);
-
+        // ----- Botonera alineada a la derecha
         JButton btnClose = new JButton("Cerrar");
         btnClose.addActionListener(e -> dispose());
-        JPanel south = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        south.add(btnClose);
-        content.add(south, BorderLayout.SOUTH);
+        JPanel actions = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 8));
+        actions.add(btnClose);
+
+        // ----- Panel raíz con padding general + gaps
+        JPanel content = new JPanel(new BorderLayout(12, 12));
+        content.setBorder(new EmptyBorder(16, 16, 16, 16));
+        content.add(header, BorderLayout.NORTH);
+        content.add(center, BorderLayout.CENTER);
+        content.add(imagePane, BorderLayout.EAST);
+        content.add(actions, BorderLayout.SOUTH);
 
         setContentPane(content);
-        setMinimumSize(new Dimension(720, 420));
+
+        // Tamaños
+        setMinimumSize(new Dimension(760, 460)); // altura suficiente para scroll + botón visible
         pack();
         setLocationRelativeTo(owner);
+        setResizable(false);
     }
 }

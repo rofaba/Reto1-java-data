@@ -50,16 +50,16 @@ public class MainFrame extends JFrame {
         right.add(btnLogout);
 
         JPanel north = new JPanel(new BorderLayout());
-        north.setBorder(new javax.swing.border.EmptyBorder(6, 6, 6, 6)); // padding interno barra superior
+        north.setBorder(new javax.swing.border.EmptyBorder(6, 6, 6, 6)); // padding superior
         north.add(top, BorderLayout.WEST);
         north.add(right, BorderLayout.EAST);
 
         JScrollPane scroll = new JScrollPane(table);
-        scroll.setBorder(new javax.swing.border.EmptyBorder(4, 0, 0, 0)); // separa tabla de la barra
+        scroll.setBorder(new javax.swing.border.EmptyBorder(4, 0, 0, 0));
 
         // Panel base layout general
         JPanel root = new JPanel(new BorderLayout(12, 12));
-        root.setBorder(new javax.swing.border.EmptyBorder(16, 16, 16, 16)); // PADDING exterior
+        root.setBorder(new javax.swing.border.EmptyBorder(16, 16, 16, 16)); // padding exterior
         root.add(north, BorderLayout.NORTH);
         root.add(scroll, BorderLayout.CENTER);
         setContentPane(root);
@@ -90,7 +90,7 @@ public class MainFrame extends JFrame {
             model = new PeliculaTableModel(pelis);
             table.setModel(model);
 
-            updateUserLabel();               // <-- refresca el label tras cargar
+            updateUserLabel();
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this, "No se pudo cargar el listado:\n"+e.getMessage());
         }
