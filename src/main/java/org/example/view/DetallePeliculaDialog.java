@@ -12,7 +12,7 @@ public class DetallePeliculaDialog extends JDialog {
     public DetallePeliculaDialog(Frame owner, Pelicula p) {
         super(owner, "Detalle", true);
 
-        // ----- Encabezado
+        // Encabezado
         JLabel lblTitle = new JLabel(p.getTitle() + " (" + p.getYear() + ")", SwingConstants.LEFT);
         lblTitle.setFont(lblTitle.getFont().deriveFont(Font.BOLD, 18f));
 
@@ -24,7 +24,8 @@ public class DetallePeliculaDialog extends JDialog {
         header.add(lblDirector, BorderLayout.SOUTH);
         header.setBorder(new EmptyBorder(0, 0, 4, 0));
 
-        // ----- Descripción
+
+        // Descripción
         JTextArea txtDesc = new JTextArea(p.getDescription());
         txtDesc.setWrapStyleWord(true);
         txtDesc.setLineWrap(true);
@@ -36,7 +37,7 @@ public class DetallePeliculaDialog extends JDialog {
         descScroll.setBorder(BorderFactory.createLineBorder(new Color(230,230,230)));
         descScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
-        // ----- Imagen (placeholder + carga asíncrona + escalado)
+        // Imagen
         JLabel lblImage = new JLabel("Cargando imagen…", SwingConstants.CENTER);
         lblImage.setVerticalAlignment(SwingConstants.TOP);
         JScrollPane imageScroll = new JScrollPane(lblImage);
@@ -107,7 +108,7 @@ public class DetallePeliculaDialog extends JDialog {
         setContentPane(content);
 
         // Tamaños
-        setMinimumSize(new Dimension(760, 460)); // altura suficiente para scroll + botón visible
+        setMinimumSize(new Dimension(760, 460));
         pack();
         setLocationRelativeTo(owner);
         setResizable(false);

@@ -18,7 +18,7 @@ public class LoginDialog extends JDialog {
     private Consumer<Usuario> onLoginSuccess;
 
     public LoginDialog(Frame owner) {
-        super(owner, "Login", true);
+        super(owner, "", true);
         buildUI();
     }
 

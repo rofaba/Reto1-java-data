@@ -102,9 +102,9 @@ public class CsvPeliculaRepository implements PeliculaRepository {
         for (int i = start; i < lines.size(); i++) {
             String ln = lines.get(i);
             if (ln.isBlank()) continue;
-            String[] p = ln.split(",", 7);
+            String[] p = ln.split(",", 8);
             if (p.length < 7) continue;
-            boolean match = p[0].equals(id) && p[6].equals(userId);
+            boolean match = p[0].equals(id) && p[7].equals(userId);
             if (match) { removed = true; continue; }
             out.add(ln);
         }

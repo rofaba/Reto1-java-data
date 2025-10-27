@@ -20,11 +20,9 @@ public class NuevoPeliculaDialog extends JDialog {
     public FormData getResult() { return result; }
 
     private void buildUI() {
-        // --- Header
         JLabel title = new JLabel("Nueva película");
         title.setFont(title.getFont().deriveFont(Font.BOLD, 18f));
 
-        // --- Campos
         txtTitle    = new JTextField(25);
         txtYear     = new JTextField(8);
         txtDirector = new JTextField(25);
@@ -38,7 +36,7 @@ public class NuevoPeliculaDialog extends JDialog {
         JScrollPane descScroll = new JScrollPane(txtDesc);
         descScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
-        // --- Form con GridBag (2 columnas)
+        // Form a dos columnas
         JPanel form = new JPanel(new GridBagLayout());
         form.setBorder(new EmptyBorder(8, 8, 8, 8));
         GridBagConstraints g = new GridBagConstraints();
@@ -53,7 +51,7 @@ public class NuevoPeliculaDialog extends JDialog {
         addRow(form, g, "Género",        txtGenre);
         addRow(form, g, "Imagen (URL)",  txtImage);
 
-        // Descripción ocupa toda la fila (label arriba)
+        // Descripción
         JLabel lblDesc = new JLabel("Descripción");
         GridBagConstraints l = (GridBagConstraints) g.clone();
         l.gridx = 0; l.gridwidth = 2; l.weightx = 1; l.fill = GridBagConstraints.HORIZONTAL;
@@ -61,17 +59,17 @@ public class NuevoPeliculaDialog extends JDialog {
 
         GridBagConstraints d = (GridBagConstraints) g.clone();
         d.gridy++; d.gridx = 0; d.gridwidth = 2; d.weightx = 1; d.fill = GridBagConstraints.BOTH;
-        d.ipady = 40; // un poco más alto sin exagerar
+        d.ipady = 40;
         form.add(descScroll, d);
 
-        // --- Botonera
+        // Botones
         JButton btnOk = new JButton("Guardar");
         JButton btnCancel = new JButton("Cancelar");
         JPanel actions = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 8));
         actions.add(btnCancel);
         actions.add(btnOk);
 
-        // --- Root con padding y gaps
+        // Root
         JPanel root = new JPanel(new BorderLayout(12, 12));
         root.setBorder(new EmptyBorder(16, 16, 16, 16));
         root.add(title, BorderLayout.NORTH);
@@ -79,13 +77,12 @@ public class NuevoPeliculaDialog extends JDialog {
         root.add(actions, BorderLayout.SOUTH);
         setContentPane(root);
 
-        // --- Tamaño compacto y centrado
         pack();
         setMinimumSize(new Dimension(540, 360));
         setResizable(false);
         setLocationRelativeTo(getOwner());
 
-        // --- Listeners
+        // Listeners
         btnOk.addActionListener(e -> {
             if (txtTitle.getText().isBlank() || txtDirector.getText().isBlank()) {
                 JOptionPane.showMessageDialog(this, "Título y Director son obligatorios");

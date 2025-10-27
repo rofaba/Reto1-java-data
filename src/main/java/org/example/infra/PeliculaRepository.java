@@ -8,6 +8,6 @@ import java.util.Optional;
 public interface PeliculaRepository {
     List<Pelicula> findAllByUser(String userId) throws IOException;
     Optional<Pelicula> findById(String id, String userId) throws IOException;
-    void add(Pelicula pelicula) throws IOException;                 // append
+    void add(Pelicula pelicula) throws IOException;
     boolean deleteById(String id, String userId) throws IOException; // reescribe CSV; true si eliminó
 }
