@@ -43,7 +43,7 @@ public class DetallePeliculaDialog extends JDialog {
                     conn.setConnectTimeout(4000);
                     conn.setReadTimeout(4000);
                     conn.setRequestProperty("User-Agent", "Mozilla/5.0");
-                    conn.setRequestProperty("Referer", "https://example.com/"); // algunos sitios lo exigen
+                    conn.setRequestProperty("Referer", "https://example.com/");
                     int code = conn.getResponseCode();
                     if (code >= 200 && code < 300) {
                         try (var in = new java.io.BufferedInputStream(conn.getInputStream())) {

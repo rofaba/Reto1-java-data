@@ -15,7 +15,7 @@ import java.util.UUID;
 public class MainFrame extends JFrame {
     private final PeliculaRepository repo;
     private final SessionContext session;
-
+    private JLabel lblUser;
     private JTable table;
     private PeliculaTableModel model;
     private JButton btnAdd, btnDelete, btnDetail, btnLogout;
@@ -31,23 +31,38 @@ public class MainFrame extends JFrame {
         table = new JTable();
         model = new PeliculaTableModel(new ArrayList<>());
         table.setModel(model);
+        table.setFillsViewportHeight(true);
+        table.setRowHeight(24);
+        table.setIntercellSpacing(new Dimension(4, 4));
 
         btnAdd = new JButton("Añadir");
         btnDelete = new JButton("Eliminar");
-        btnDetail = new JButton("Ver más");
+        btnDetail = new JButton("Detalles");
         btnLogout = new JButton("Cerrar sesión");
 
-        JPanel top = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        // Gaps más amplios
+        JPanel top = new JPanel(new FlowLayout(FlowLayout.LEFT, 12, 8));
         top.add(btnAdd); top.add(btnDelete); top.add(btnDetail);
-        JPanel right = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+
+        JPanel right = new JPanel(new FlowLayout(FlowLayout.RIGHT, 12, 8));
+        lblUser = new JLabel();
+        right.add(lblUser);
         right.add(btnLogout);
+
         JPanel north = new JPanel(new BorderLayout());
+        north.setBorder(new javax.swing.border.EmptyBorder(6, 6, 6, 6)); // padding interno barra superior
         north.add(top, BorderLayout.WEST);
         north.add(right, BorderLayout.EAST);
 
-        setLayout(new BorderLayout(8,8));
-        add(north, BorderLayout.NORTH);
-        add(new JScrollPane(table), BorderLayout.CENTER);
+        JScrollPane scroll = new JScrollPane(table);
+        scroll.setBorder(new javax.swing.border.EmptyBorder(4, 0, 0, 0)); // separa tabla de la barra
+
+        // Panel base layout general
+        JPanel root = new JPanel(new BorderLayout(12, 12));
+        root.setBorder(new javax.swing.border.EmptyBorder(16, 16, 16, 16)); // PADDING exterior
+        root.add(north, BorderLayout.NORTH);
+        root.add(scroll, BorderLayout.CENTER);
+        setContentPane(root);
 
         setSize(800, 500);
         setLocationRelativeTo(null);
@@ -63,14 +78,19 @@ public class MainFrame extends JFrame {
                 if (e.getClickCount() == 2) onDetail();
             }
         });
+        updateUserLabel();
     }
 
     public void loadData() {
         try {
-            String userId = session.getCurrentUser().getId();
-            List<Pelicula> pelis = repo.findAllByUser(userId);
+            var u = (session != null) ? session.getCurrentUser() : null;
+            String userId = (u != null) ? u.getId() : null;
+
+            List<Pelicula> pelis = (userId != null) ? repo.findAllByUser(userId) : List.of();
             model = new PeliculaTableModel(pelis);
             table.setModel(model);
+
+            updateUserLabel();               // <-- refresca el label tras cargar
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this, "No se pudo cargar el listado:\n"+e.getMessage());
         }
@@ -126,6 +146,31 @@ public class MainFrame extends JFrame {
     }
 
     private void onLogout() {
-        dispose(); // cierra ventana principal; muestra login desde tu Main
+        dispose(); // muestra login desde Main
+    }
+
+
+    private void updateUserLabel() {         // <-- null-safe
+        String who = "(sin sesión)";
+        if (session != null && session.getCurrentUser() != null) {
+            var u = session.getCurrentUser();
+            if (u.getEmail() != null && !u.getEmail().isBlank()) who = u.getEmail();
+            else if (u.getEmail() != null && !u.getEmail().isBlank()) who = u.getEmail();
+            else if (u.getId() != null && !u.getId().isBlank()) who = u.getId();
+        }
+        lblUser.setText("👤 " + who);
+        lblUser.setToolTipText("Sesión activa: " + who);
+    }
+
+    private String resolveUserLabel() {
+        var u = session.getCurrentUser();
+
+        try {
+            if (u.getEmail() != null && !u.getEmail().isBlank()) return u.getEmail();
+        } catch (Throwable ignored) {}
+        try {
+            if (u.getEmail() != null && !u.getEmail().isBlank()) return u.getEmail();
+        } catch (Throwable ignored) {}
+        return u.getId();
     }
 }

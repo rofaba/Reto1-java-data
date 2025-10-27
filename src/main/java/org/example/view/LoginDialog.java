@@ -4,6 +4,7 @@ import org.example.infra.AuthProvider;
 import org.example.model.Usuario;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.io.IOException;
 import java.util.function.Consumer;
@@ -25,26 +26,45 @@ public class LoginDialog extends JDialog {
     public void setOnLoginSuccess(Consumer<Usuario> cb) { this.onLoginSuccess = cb; }
 
     private void buildUI() {
-        txtEmail = new JTextField(20);
-        txtPassword = new JPasswordField(20);
+        txtEmail = new JTextField(25);
+        txtPassword = new JPasswordField(25);
         btnLogin = new JButton("Entrar");
         btnCancel = new JButton("Cancelar");
 
-        JPanel form = new JPanel(new GridLayout(0,1,6,6));
+        JPanel form = new JPanel(new GridLayout(0,1,8,8));
         form.add(new JLabel("Email"));
         form.add(txtEmail);
         form.add(new JLabel("Contraseña"));
         form.add(txtPassword);
 
-        JPanel actions = new JPanel();
+        JLabel title = new JLabel("Catálogo de Películas", SwingConstants.CENTER);
+        title.setFont(title.getFont().deriveFont(Font.BOLD, 18f));
+        JLabel note = new JLabel("Introduce tus credenciales para iniciar sesión", SwingConstants.CENTER);
+        note.setFont(note.getFont().deriveFont(Font.ITALIC, 12f));
+
+        JPanel header = new JPanel(new BorderLayout());
+        header.add(title, BorderLayout.CENTER);
+        header.add(note, BorderLayout.SOUTH);
+
+        JPanel actions = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 8));
         actions.add(btnCancel);
         actions.add(btnLogin);
 
-        setLayout(new BorderLayout(8,8));
-        add(form, BorderLayout.CENTER);
-        add(actions, BorderLayout.SOUTH);
+        JPanel footer = new JPanel(new BorderLayout());
+        footer.add(new JLabel("* Campos obligatorios", SwingConstants.LEFT), BorderLayout.WEST);
+        footer.add(actions, BorderLayout.EAST);
+
+        JPanel root = new JPanel(new BorderLayout(8, 8));
+        root.setBorder(new EmptyBorder(24, 24, 24, 24));
+        root.add(header, BorderLayout.NORTH);
+        root.add(form, BorderLayout.CENTER);
+        root.add(footer, BorderLayout.SOUTH);
+        setContentPane(root);
+
         pack();
+        setMinimumSize(new Dimension(460, 300));
         setLocationRelativeTo(getOwner());
+        setResizable(false);
 
         btnLogin.addActionListener(e -> doLogin());
         btnCancel.addActionListener(e -> dispose());

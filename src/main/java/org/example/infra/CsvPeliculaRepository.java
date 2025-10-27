@@ -75,7 +75,7 @@ public class CsvPeliculaRepository implements PeliculaRepository {
                 String.valueOf(pelicula.getYear()),
                 nullToEmpty(pelicula.getDirector()),
                 safeDesc,
-                genre, 
+                genre,
                 nullToEmpty(pelicula.getImageUrl()),
                 nullToEmpty(pelicula.getUserId())
         );
@@ -120,7 +120,7 @@ public class CsvPeliculaRepository implements PeliculaRepository {
             Files.createDirectories(file.getParent());
             Files.createFile(file);
             if (hasHeader) {
-                String header = "id,title,year,director,description,imageUrl,userId";
+                String header = "id,title,year,director,description,genre, imageUrl,userId";
                 Files.writeString(file, header, StandardCharsets.UTF_8, StandardOpenOption.TRUNCATE_EXISTING);
             }
         }
