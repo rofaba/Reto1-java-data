@@ -13,7 +13,13 @@ public class PeliculaTableModel extends AbstractTableModel {
     @Override public int getColumnCount(){ return cols.length; }
     @Override public String getColumnName(int c){ return cols[c]; }
 
-    @Override public Object getValueAt(int r,int c){
+    /** Devuelve el valor de la celda en la fila {@code r} y columna {@code c}.
+     *
+     * @param r Fila
+     * @param c Columna
+     * @return Valor de la celda
+     */
+     @Override public Object getValueAt(int r,int c){
         Pelicula p = data.get(r);
         return switch(c){
             case 0 -> p.getTitle();

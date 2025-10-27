@@ -1,5 +1,5 @@
 package org.example.model;
-
+import java.lang.reflect.Constructor;
 
 import java.util.Objects;
 
@@ -13,12 +13,31 @@ public class Pelicula {
     private String imageUrl;
     private String userId;
 
+    /**
+     * Constructor de la clase {@code Pelicula}.
+     *
+     * @param id          Identificador único de la película.
+     * @param title       Título de la película.
+     * @param year        Año de lanzamiento de la película.
+     * @param director    Director de la película.
+     * @param description Descripción breve de la película.
+     * @param genero      Género cinematográfico de la película.
+     * @param imageUrl    URL del cartel o imagen de la película.
+     * @param userId      Identificador del usuario propietario de la película.
+     */
+
     public Pelicula(String id, String title, int year, String director,
                     String description, String genero, String imageUrl, String userId) {
         this.id = id; this.title = title; this.year = year; this.director = director;
         this.description = description; this.genero = genero; this.imageUrl = imageUrl; this.userId = userId;
     }
 
+    /**
+     * Crea un objeto {@code Pelicula} a partir de una línea en formato CSV.
+     *
+     * @param line Línea en formato CSV.
+     * @return Objeto {@code Pelicula}.
+     */
     public static Pelicula fromCsv(String line) {
         String[] p = line.split(",", 8); // id,title,year,director,description,imageUrl,userId
         return new Pelicula(
@@ -26,13 +45,18 @@ public class Pelicula {
         );
     }
 
+     /**
+     * Convierte el objeto {@code Pelicula} a una representación en formato CSV.
+     *
+     * @return Representación en formato CSV.
+     */
     public String toCsv() {
-        // Evitar romper el CSV si la descripción trae comas: las sustituimos (simple).
         String safeDesc = description == null ? "" : description.replace(",", " ");
         return String.join(",", id, title, String.valueOf(year), director, safeDesc, genero, imageUrl, userId);
     }
 
-    // getters/setters
+
+    // getters & setters
     public String getId(){ return id; }
     public String getTitle(){ return title; }
     public int getYear(){ return year; }
@@ -50,6 +74,10 @@ public class Pelicula {
     public void setImageUrl(String imageUrl){ this.imageUrl = imageUrl; }
     public void setUserId(String userId){ this.userId = userId; }
 
-    @Override public boolean equals(Object o){ return o instanceof Pelicula v && Objects.equals(id,v.id); }
-    @Override public int hashCode(){ return Objects.hash(id); }
+    @Override public boolean equals(Object o){
+        return o instanceof Pelicula v && Objects.equals(id,v.id);
+    }
+    @Override public int hashCode(){
+        return Objects.hash(id);
+    }
 }

@@ -1,92 +1,122 @@
-HU-01 — Iniciar sesión
+Historias de Usuario
+=====================
+**HU-01 — Iniciar sesión**
 
-Como usuario, quiero iniciar sesión con mi email y contraseña para acceder a mi colección de películas.
-Criterios de aceptación:
+Como usuario registrado, quiero acceder a la aplicación introduciendo mi correo y contraseña para poder gestionar mi colección personal de películas.
 
-Si las credenciales son válidas, accedo al Listado.
+✅ Criterios de aceptación:
 
-Si no, veo un mensaje de error claro.
+Si las credenciales son válidas, se muestra el listado de películas del usuario.
+
+Si las credenciales son incorrectas, aparece un mensaje de error claro.
 
 No se muestran películas de otros usuarios.
 
-HU-02 — Ver listado de mis películas
+El formulario impide dejar campos vacíos.
 
-Como usuario autenticado, quiero ver todas mis películas en una tabla para revisar rápidamente mi colección.
-Criterios de aceptación:
+**HU-02 — Visualizar mis películas**
 
-Tabla con Título, Año, Director, Género (y acceso a detalle).
+Como usuario autenticado, quiero ver todas mis películas en una tabla para revisar y gestionar fácilmente mi colección.
 
-Solo carga películas asociadas a mi usuario.
+✅ Criterios de aceptación:
 
-Orden y scroll básicos.
+La tabla muestra las columnas: Título, Año, Director y Género.
 
-HU-03 — Ver detalle de una película
+Solo se cargan películas asociadas al usuario activo.
 
-Como usuario, quiero abrir una vista de detalle para ver Descripción y el cartel (Imagen/URL) de la película seleccionada.
-Criterios de aceptación:
+Se permite hacer scroll si hay muchas películas.
 
-Muestra Título, Año, Director, Descripción, Género, Imagen.
+Si no hay películas, se muestra una lista vacía.
 
-Botón Volver al listado.
+**HU-03 — Ver detalle de una película**
 
-HU-04 — Añadir una nueva película
+Como usuario, quiero ver los detalles completos de una película seleccionada para conocer su descripción y ver su cartel.
 
-Como usuario, quiero añadir una película rellenando un formulario mínimo para ampliar mi colección.
-Criterios de aceptación:
+✅ Criterios de aceptación:
 
-Obligatorios: Título, Año, Director, Género (Descripción/Imagen opcionales).
+Se muestran Título, Año, Director, Descripción, Género e Imagen (URL).
 
-La nueva película queda asociada a mi usuario y aparece en el listado.
+Existe un botón o acción para volver al listado.
 
-Validaciones básicas (año numérico, campos no vacíos).
+Si no hay imagen disponible, se muestra un mensaje.
 
-HU-05 — Eliminar una película
+**HU-04 — Añadir una nueva película**
 
-Como usuario, quiero eliminar una película seleccionada para mantener actualizada mi colección.
-Criterios de aceptación:
+Como usuario, quiero añadir una nueva película mediante un formulario para ampliar mi colección personal.
 
-Requiere confirmación.
+✅ Criterios de aceptación:
 
-Tras eliminar, la fila desaparece del listado.
+Campos obligatorios: Título, Año, Director y Género.
 
-No puedo eliminar películas que no son mías.
+Campos opcionales: Descripción e Imagen (URL).
 
-HU-06 — Cerrar sesión
+Validaciones: el año debe ser numérico y los campos obligatorios no pueden estar vacíos.
 
-Como usuario, quiero cerrar sesión para salir de la aplicación de forma segura.
-Criterios de aceptación:
+Al guardar, la nueva película aparece inmediatamente en el listado asociada al usuario actual.
 
-Regresa a la pantalla de Login.
+Si se cancela, no se realiza ningún cambio.
 
-Se limpia el estado del usuario.
+**HU-05 — Eliminar una película**
 
-HU-07 — Persistencia local en CSV (no funcional orientada a usuario)
+Como usuario, quiero eliminar una película seleccionada para mantener mi colección actualizada.
 
-Como usuario, quiero que mis altas y bajas queden guardadas en archivos locales CSV para no perder cambios al reiniciar.
-Criterios de aceptación:
+✅ Criterios de aceptación:
 
-usuarios.csv: Id, Email, Contraseña.
+Se solicita confirmación antes de eliminar.
 
-peliculas.csv: Id, Título, Año, Director, Descripción, Género, Imagen, UserId.
+Una vez eliminada, la película desaparece inmediatamente del listado.
 
-Añadir/Eliminar se refleja en los CSV.
+No es posible eliminar películas que pertenecen a otro usuario.
 
-HU-08 — Navegación clara entre pantallas (usabilidad)
+Si ocurre un error, se muestra un mensaje claro.
 
-Como usuario, quiero una navegación simple entre Login → Listado → Detalle para usar la app sin confusión.
-Criterios de aceptación:
+**HU-06 — Cerrar sesión**
 
-Tres pantallas clave: Login, Listado, Detalle.
+Como usuario, quiero cerrar sesión para salir de forma segura y proteger mi información.
 
-Controles visibles para Añadir, Eliminar, Detalle y Volver.
+✅ Criterios de aceptación:
 
-HU-09 — Interfaz simple y accesible (usabilidad)
+Al cerrar sesión, se vuelve a la pantalla de inicio de sesión.
 
-Como usuario, quiero una interfaz clara, intuitiva y accesible para completar mis tareas sin esfuerzo.
-Criterios de aceptación:
+Se limpia la información del usuario activo.
 
-Etiquetas y mensajes comprensibles.
+No se pueden ver películas sin haber iniciado sesión.
 
-Estados vacíos y errores gestionados con mensajes breves.
+**HU-07 — Conservar mis cambios**
 
-Componentes Swing estándar y coherentes con el mockup.
+Como usuario, quiero que al volver a abrir la aplicación mi colección siga igual, para no perder las películas que añadí o eliminé.
+
+✅ Criterios de aceptación:
+
+Tras cerrar y abrir la aplicación, las altas y bajas anteriores se ven reflejadas.
+
+No se pierden cambios si cierro desde el listado o desde el detalle.
+
+
+# Requisitos No Funcionales
+=============================
+
+**Navegación clara**
+
+Como usuario, quiero poder desplazarme fácilmente entre las pantallas principales para entender en todo momento dónde estoy y cómo volver atrás.
+
+✅ Criterios de aceptación:
+
+Pantallas principales: Login, Listado y Detalle.
+
+Controles visibles para Añadir, Eliminar, Ver detalle y Volver.
+
+Transiciones claras entre vistas.
+
+**Interfaz simple y accesible**
+
+Como usuario, quiero una interfaz clara, coherente y accesible para poder usar la aplicación sin dificultad.
+
+✅ Criterios de aceptación:
+
+Etiquetas y mensajes breves y comprensibles.
+
+Estados vacíos y errores gestionados con claridad.
+
+Uso de componentes Swing estándar y diseño coherente en toda la aplicación.
+

@@ -14,17 +14,31 @@ public class CsvPeliculaRepository implements PeliculaRepository {
     private final Path file;          // ruta al archivo CSV
     private final boolean hasHeader;  // marca si csv tiene cabecera
 
+    /**
+     * Constructor
+     * @param file ruta al archivo CSV
+     * @param hasHeader true si el CSV tiene cabecera
+     */
+
     public CsvPeliculaRepository(Path file, boolean hasHeader) {
         this.file = file;
         this.hasHeader = hasHeader;
     }
-
+    /**     * Divide una línea en campos, detectando el separador (',' o ';') según el que aparezca más veces.
+     * @param line línea a dividir
+     * @return array de campos
+     */
     private static String[] splitFlexible(String line) {
         String sep = (line.chars().filter(ch -> ch == ';').count()
                 >= line.chars().filter(ch -> ch == ',').count()) ? ";" : ",";
         return line.split(java.util.regex.Pattern.quote(sep), 8); // ← hasta 8 campos
     }
-
+    /**
+     * Busca todas las películas asociadas a un usuario.
+     * @param userId id del usuario
+     * @return lista de películas del usuario
+     * @throws IOException si hay un error de E/S
+     */
     @Override
     public List<Pelicula> findAllByUser(String userId) throws IOException {
         ensureFile();
@@ -59,13 +73,20 @@ public class CsvPeliculaRepository implements PeliculaRepository {
         return out;
     }
 
-
-
+/**     * Busca una película por su ID y el ID del usuario.
+     * @param id ID de la película
+     * @param userId ID del usuario
+     * @return Optional con la película si se encuentra, vacío si no
+     * @throws IOException si hay un error de E/S
+     */
     @Override
     public Optional<Pelicula> findById(String id, String userId) throws IOException {
         return findAllByUser(userId).stream().filter(m -> m.getId().equals(id)).findFirst();
     }
-
+/**     * Añade una nueva película al repositorio.
+     * @param pelicula película a añadir
+     * @throws IOException si hay un error de E/S
+     */
     @Override
     public void add(Pelicula pelicula) throws IOException {
         ensureFile();
@@ -87,7 +108,12 @@ public class CsvPeliculaRepository implements PeliculaRepository {
         }
     }
 
-
+/**     * Elimina una película por su ID y el ID del usuario.
+     * @param id ID de la película
+     * @param userId ID del usuario
+     * @return true si se eliminó la película, false si no se encontró
+     * @throws IOException si hay un error de E/S
+     */
     @Override
     public boolean deleteById(String id, String userId) throws IOException {
         ensureFile();
@@ -116,7 +142,9 @@ public class CsvPeliculaRepository implements PeliculaRepository {
         }
         return removed;
     }
-
+/**     * Asegura que el archivo CSV existe, creándolo si es necesario.
+     * @throws IOException si hay un error de E/S
+     */
     private void ensureFile() throws IOException {
         if (!Files.exists(file)) {
             Files.createDirectories(file.getParent());
@@ -127,7 +155,10 @@ public class CsvPeliculaRepository implements PeliculaRepository {
             }
         }
     }
-
+/**     * Convierte una cadena a entero de forma segura, devolviendo 0 en caso de error.
+     * @param s cadena a convertir
+     * @return entero convertido o 0 si hay error
+     */
     private static int safeInt(String s) {
         try { return Integer.parseInt(s.trim()); } catch (Exception e) { return 0; }
     }

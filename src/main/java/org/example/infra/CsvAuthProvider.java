@@ -9,12 +9,22 @@ public class CsvAuthProvider implements AuthProvider {
 
     private final UsuarioRepository usuarios;
     private final SessionContext session;
-
+/**
+     * Crea un nuevo proveedor de autenticación basado en CSV.
+     * @param usuarios repositorio de usuarios
+     * @param session contexto de sesión
+     */
     public CsvAuthProvider(UsuarioRepository usuarios, SessionContext session) {
         this.usuarios = usuarios;
         this.session = session;
     }
-
+/**
+     * Intenta autenticar un usuario con el email y contraseña proporcionados.
+     * @param email email del usuario
+     * @param password contraseña del usuario
+     * @return el usuario autenticado si las credenciales son correctas, o null si no
+     * @throws IOException si hay un error de E/S
+     */
     @Override
     public Usuario login(String email, String password) throws IOException {
         String e = email == null ? "" : email.trim();
@@ -39,7 +49,10 @@ public class CsvAuthProvider implements AuthProvider {
     public Usuario getCurrentUser() {
         return session.getCurrentUser();
     }
-
+/**
+     * Verifica si hay un usuario actualmente autenticado.
+     * @return true si hay un usuario autenticado, false si no
+     */
     @Override
     public boolean isLoggedIn() {
         return session.isLoggedIn();

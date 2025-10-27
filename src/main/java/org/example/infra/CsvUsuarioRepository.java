@@ -15,7 +15,12 @@ public class CsvUsuarioRepository implements UsuarioRepository {
         this.file = file;
         this.hasHeader = hasHeader;
     }
-
+/**
+     * Busca un usuario por su email.
+     * @param email email del usuario
+     * @return Optional con el usuario si se encuentra, o vacío si no
+     * @throws IOException si hay un error de E/S
+     */
     @Override
     public Optional<Usuario> findByEmail(String email) throws IOException {
         ensureFile();
@@ -41,13 +46,24 @@ public class CsvUsuarioRepository implements UsuarioRepository {
         }
         return Optional.empty();
     }
-
+/**
+     * Busca un usuario por su id.
+     * @param id id del usuario
+     * @return Optional con el usuario si se encuentra, o vacío si no
+     * @throws IOException si hay un error de E/S
+     */
 
     @Override
     public Optional<Usuario> findById(String id) throws IOException {
         return readFirstMatch(0, id);
     }
-
+/**
+     * Lee el primer usuario que coincide en el índice y valor dados.
+     * @param idx índice del campo (0=id, 1=email)
+     * @param value valor a buscar
+     * @return Optional con el usuario si se encuentra, o vacío si no
+     * @throws IOException si hay un error de E/S
+     */
     private Optional<Usuario> readFirstMatch(int idx, String value) throws IOException {
         ensureFile();
         try (BufferedReader br = Files.newBufferedReader(file, StandardCharsets.UTF_8)) {
@@ -65,7 +81,10 @@ public class CsvUsuarioRepository implements UsuarioRepository {
         }
         return Optional.empty();
     }
-
+/**
+     * Asegura que el archivo existe, creándolo si es necesario.
+     * @throws IOException si hay un error de E/S
+     */
     private void ensureFile() throws IOException {
         if (!Files.exists(file)) {
             Files.createDirectories(file.getParent());
