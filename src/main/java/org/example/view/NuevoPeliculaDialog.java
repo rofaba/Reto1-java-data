@@ -7,7 +7,6 @@ import java.awt.*;
 public class NuevoPeliculaDialog extends JDialog {
 
     public record FormData(String title, String year, String director, String description, String genre, String imageUrl) {}
-
     private JTextField txtTitle, txtYear, txtDirector, txtImage, txtGenre;
     private JTextArea txtDesc;
     private FormData result;
@@ -18,7 +17,7 @@ public class NuevoPeliculaDialog extends JDialog {
     }
 
     public FormData getResult() { return result; }
-
+    /* Construye la UI del diálogo */
     private void buildUI() {
         JLabel title = new JLabel("Agregar Nueva Película");
         title.setFont(title.getFont().deriveFont(Font.BOLD, 18f));
@@ -101,7 +100,7 @@ public class NuevoPeliculaDialog extends JDialog {
         btnCancel.addActionListener(e -> { result = null; dispose(); });
         getRootPane().setDefaultButton(btnOk);
     }
-
+    /* Añade una fila al formulario */
     private static void addRow(JPanel form, GridBagConstraints g, String label, JComponent field) {
         GridBagConstraints c1 = (GridBagConstraints) g.clone();
         c1.gridx = 0; c1.weightx = 0; c1.gridwidth = 1; c1.fill = GridBagConstraints.NONE;

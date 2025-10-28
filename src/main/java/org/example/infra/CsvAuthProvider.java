@@ -1,10 +1,10 @@
 package org.example.infra;
 
 import org.example.model.Usuario;
-
 import java.io.IOException;
-import java.util.Optional;
-
+/**
+ * Proveedor de autenticación que utiliza un repositorio CSV para validar usuarios.
+ */
 public class CsvAuthProvider implements AuthProvider {
 
     private final UsuarioRepository usuarios;

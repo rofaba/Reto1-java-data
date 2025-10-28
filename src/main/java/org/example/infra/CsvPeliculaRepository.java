@@ -1,7 +1,6 @@
 package org.example.infra;
 
 import org.example.model.Pelicula;
-
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;

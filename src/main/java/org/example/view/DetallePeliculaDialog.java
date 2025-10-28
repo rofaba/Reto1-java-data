@@ -107,7 +107,7 @@ public class DetallePeliculaDialog extends JDialog {
 
         setContentPane(content);
 
-        // Tamaños
+        //Tamaños mínimos y centrado
         setMinimumSize(new Dimension(760, 460));
         pack();
         setLocationRelativeTo(owner);

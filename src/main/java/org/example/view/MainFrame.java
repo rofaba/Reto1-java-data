@@ -12,6 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Ventana principal de la aplicación.
+ */
 public class MainFrame extends JFrame {
     private final PeliculaRepository repo;
     private final SessionContext session;
@@ -19,6 +22,8 @@ public class MainFrame extends JFrame {
     private JTable table;
     private PeliculaTableModel model;
     private JButton btnAdd, btnDelete, btnDetail, btnLogout;
+    private JScrollPane scroll;
+    private JPanel emptyState;
 
     public MainFrame(PeliculaRepository repo, SessionContext session) {
         super("Mis Películas");
@@ -26,7 +31,9 @@ public class MainFrame extends JFrame {
         this.session = session;
         buildUI();
     }
-
+    /*
+     * Construye la interfaz de usuario.
+     */
     private void buildUI() {
         table = new JTable();
         model = new PeliculaTableModel(new ArrayList<>());
@@ -80,7 +87,9 @@ public class MainFrame extends JFrame {
         });
         updateUserLabel();
     }
-
+    /**
+     * Carga los datos de las películas del usuario actual y actualiza la tabla.
+     */
     public void loadData() {
         try {
             var u = (session != null) ? session.getCurrentUser() : null;
@@ -91,11 +100,17 @@ public class MainFrame extends JFrame {
             table.setModel(model);
 
             updateUserLabel();
+            // solo si no hay películas para el usuario actual
+            if (pelis.isEmpty()) {
+                lblUser.setText("👤 " + resolveUserLabel() + " - no tiene películas guardadas.");
+            }
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this, "No se pudo cargar el listado:\n"+e.getMessage());
         }
     }
-
+    /**
+     * Maneja el evento de añadir una nueva película.
+     */
     private void onAdd() {
         var dlg = new NuevoPeliculaDialog(this);
         dlg.setVisible(true);
@@ -137,7 +152,9 @@ public class MainFrame extends JFrame {
             JOptionPane.showMessageDialog(this, "Error al eliminar:\n"+ex.getMessage());
         }
     }
-
+    /**
+     * Maneja el evento de mostrar los detalles de la película seleccionada.
+     */
     private void onDetail() {
         int row = table.getSelectedRow();
         if (row < 0) { JOptionPane.showMessageDialog(this, "Selecciona una fila"); return; }
@@ -149,7 +166,8 @@ public class MainFrame extends JFrame {
         dispose(); // muestra login desde Main
     }
 
-
+    /*  Actualiza la etiqueta del usuario en la interfaz.
+     */
     private void updateUserLabel() {         // <-- null-safe
         String who = "(sin sesión)";
         if (session != null && session.getCurrentUser() != null) {

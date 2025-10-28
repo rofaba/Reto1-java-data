@@ -5,7 +5,6 @@ import org.example.infra.SessionContext;
 import org.example.infra.PeliculaRepository;
 import org.example.view.LoginDialog;
 import org.example.view.MainFrame;
-
 import javax.swing.*;
 
 public class MainController {
