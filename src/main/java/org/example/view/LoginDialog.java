@@ -26,8 +26,8 @@ public class LoginDialog extends JDialog {
     public void setOnLoginSuccess(Consumer<Usuario> cb) { this.onLoginSuccess = cb; }
 
     private void buildUI() {
-        txtEmail = new JTextField(25);
-        txtPassword = new JPasswordField(25);
+        txtEmail = new JTextField(20);
+        txtPassword = new JPasswordField(20);
         btnLogin = new JButton("Entrar");
         btnCancel = new JButton("Cancelar");
 
