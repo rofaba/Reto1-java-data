@@ -18,9 +18,16 @@ public class LoginDialog extends JDialog {
     private Consumer<Usuario> onLoginSuccess;
 
     public LoginDialog(Frame owner) {
-        super(owner, "", true);
+        super(owner, "Login", true);
         buildUI();
+        setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override public void windowClosing(java.awt.event.WindowEvent e) {
+                System.exit(0); // cerrar app si user cierra login con la X
+            }
+        });
     }
+
 
     public void setAuth(AuthProvider auth) { this.auth = auth; }
     public void setOnLoginSuccess(Consumer<Usuario> cb) { this.onLoginSuccess = cb; }
@@ -67,7 +74,7 @@ public class LoginDialog extends JDialog {
         setResizable(false);
 
         btnLogin.addActionListener(e -> doLogin());
-        btnCancel.addActionListener(e -> dispose());
+        btnCancel.addActionListener(e -> System.exit(0));
         getRootPane().setDefaultButton(btnLogin);
     }
 
