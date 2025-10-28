@@ -14,7 +14,7 @@ public class MainController {
     private final AuthProvider auth;
     private final SessionContext session;
 
-    private MainFrame mainFrame; // inyectado en init(...)
+    private MainFrame mainFrame; // inyectado en init
 
     public MainController(PeliculaRepository peliculaRepo, AuthProvider auth, SessionContext session) {
         this.peliculaRepo = peliculaRepo;
@@ -22,7 +22,7 @@ public class MainController {
         this.session = session;
     }
 
-    /** Inyecta MainFrame y arranca el flujo con Login (como tu estructura previa) */
+    /** Inyecta MainFrame y arranca el flujo con Login */
     public void init(MainFrame frame) {
         this.mainFrame = frame;
         this.mainFrame.addWindowListener(new java.awt.event.WindowAdapter() {
@@ -38,29 +38,29 @@ public class MainController {
         login.setAuth(auth);
 
         login.setOnLoginSuccess(u -> {
-            // 1) Garantiza usuario en sesión (por si tu AuthProvider no lo setea)
+            // Garantiza usuario en sesión
             if (!session.isLoggedIn()) {
                 session.setCurrentUser(u);
             }
 
-            // 2) Asegura la ventana principal
+            // Asegura la ventana principal
             if (mainFrame == null) {
                 mainFrame = new MainFrame(peliculaRepo, session);
-                // (opcional) al cerrar main volvemos al login
+                // al cerrar main volvemos al login
                 mainFrame.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override public void windowClosing(java.awt.event.WindowEvent e) { doLogout(); }
                     @Override public void windowClosed (java.awt.event.WindowEvent e) { doLogout(); }
                 });
             }
 
-            // 3) Carga el listado del usuario y muestra
+            // Carga el listado del usuario y muestra
             SwingUtilities.invokeLater(() -> {
-                mainFrame.loadData();     // <-- lee CSV filtrado por session.getCurrentUser().getId()
+                mainFrame.loadData();     // lee CSV filtrado por session.getCurrentUser().getId()
                 mainFrame.setVisible(true);
             });
         });
 
-        login.setVisible(true); // modal
+        login.setVisible(true);
     }
 
     private void showMain() {
@@ -89,4 +89,3 @@ public class MainController {
     }
 
 }
-

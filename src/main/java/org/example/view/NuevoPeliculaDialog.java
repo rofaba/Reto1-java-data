@@ -20,7 +20,7 @@ public class NuevoPeliculaDialog extends JDialog {
     public FormData getResult() { return result; }
 
     private void buildUI() {
-        JLabel title = new JLabel("Nueva película");
+        JLabel title = new JLabel("Agregar Nueva Película");
         title.setFont(title.getFont().deriveFont(Font.BOLD, 18f));
 
         txtTitle    = new JTextField(25);
